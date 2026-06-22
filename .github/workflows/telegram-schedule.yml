@@ -1,0 +1,32 @@
+name: Scheduled Telegram Bot
+
+on:
+  push:
+    branches:
+      - main # Runs every time you push code to the main branch
+  schedule:
+    - cron: '0 * * * *' # Runs automatically every hour. You can adjust this timing!
+  workflow_dispatch: # Gives you a manual "Run workflow" button in GitHub to test it instantly
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run automated bot task
+        env:
+          # This maps your saved GitHub secret to the environment variable your script reads
+          README_BOT: ${{ secrets.README_BOT }} 
+        run: |
+          python bot.py
